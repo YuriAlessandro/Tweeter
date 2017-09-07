@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.example.tweeter.MainActivity">
+
+    <ImageView
+        android:id="@+id/userPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@mipmap/ic_launcher_round"
+        android:clickable="true"
+        android:onClick="setProfilePicture"/>
+
+    <TextView
+        android:id="@+id/welcomeMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/userPhoto"
+        android:layout_toRightOf="@id/userPhoto"
+        android:paddingLeft="10dp"
+        android:text="O que está acontecendo?" />
+
+    <EditText
+        android:id="@+id/newTweet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:layout_below="@id/userPhoto" />
+
+    <Button
+        android:id="@+id/sendTweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tweet"
+        android:layout_below="@id/newTweet"
+        android:layout_marginLeft="10dp"
+        android:onClick="sendTweet"/>
+
+    <ListView
+        android:id="@+id/tweets"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/sendTweet"/>
+</android.widget.RelativeLayout>
