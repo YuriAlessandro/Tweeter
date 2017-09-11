@@ -1,6 +1,7 @@
 package com.example.tweeter;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,8 +31,9 @@ public class Tweet implements Serializable{
         return this.text;
     }
 
-    public Date getDate() {
-        return date;
+    public String getDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy - hh:mm");
+        return dateFormat.format(date);
     }
 
     public void setDate(Date date) {
