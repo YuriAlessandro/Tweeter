@@ -7,6 +7,7 @@ import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         this.adapter = new TweetAdapter(allTweets, this);
         tweetsList.setAdapter(adapter);
 
+        registerForContextMenu(tweetsList);
+
         tweetsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -51,19 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
                 intent.putExtra(Tweet.TWEET_EXTRA, allTweets.get(position));
                 startActivity(intent);
-            }
-        });
-
-        tweetsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Context context = getApplicationContext();
-                Intent intent = new Intent(context, EditTweetActivity.class);
-
-                intent.putExtra(Tweet.TWEET_EXTRA, allTweets.get(position));
-                startActivityForResult(intent, EDIT);
-
-                return true;
             }
         });
     }
@@ -77,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         allTweets.add(newTweet);
         adapter.notifyDataSetChanged();
+
+        tweet.setText("");
     }
 
     public void setProfilePicture(View v){
@@ -123,4 +116,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tweets_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int position = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position;
+        switch (item.getItemId()) {
+            case R.id.edit:
+                Context context = getApplicationContext();
+                Intent intent = new Intent(context, EditTweetActivity.class);
+
+                intent.putExtra(Tweet.TWEET_EXTRA, allTweets.get(position));
+                startActivityForResult(intent, EDIT);
+                return true;
+            case R.id.delete:
+                allTweets.remove(position);
+                adapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
 }

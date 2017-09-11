@@ -1,11 +1,13 @@
 package com.example.tweeter;
 
 import android.app.Activity;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,5 +54,9 @@ public class TweetAdapter extends BaseAdapter {
         date.setText(tweet.getDate().toString());
 
         return view;
+    }
+
+    public List<Tweet> getList(){
+        return new ArrayList<Tweet>(allTweets);
     }
 }
