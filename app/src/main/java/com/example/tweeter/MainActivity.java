@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         Context c = getApplicationContext();
         Intent i = new Intent(c, ChatActivity.class);
-        i.putExtra(Tweet.TWEET_EXTRA, newTweet);
 
         startActivityForResult(i, DIRECT);
     }
