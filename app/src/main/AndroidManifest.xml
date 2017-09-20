@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".TweetActivity" />
-        <activity android:name=".EditTweetActivity"></activity>
+        <activity android:name=".EditTweetActivity" />
+        <activity android:name=".ChatActivity"></activity>
     </application>
 
 </manifest>
