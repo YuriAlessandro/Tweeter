@@ -28,16 +28,23 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private List<Tweet> allTweets;
-    TweetAdapter adapter;
+    private TweetAdapter adapter;
+
+    // UI Components
+    private EditText tweet;
 
     private static final int EDIT = 0;
     private static final int CAMERA = 1;
+    private static final int DIRECT = 2;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize private UI Components
+        this.tweet = (EditText) findViewById(R.id.newTweet);
 
         allTweets = new ArrayList<Tweet>();
         final ListView tweetsList = (ListView) findViewById(R.id.tweets);
@@ -60,16 +67,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendTweet(View view){
-        EditText tweet = (EditText) findViewById(R.id.newTweet);
-        String textNewTweet = tweet.getText().toString();
+        String textNewTweet = this.tweet.getText().toString();
 
         Author author = new Author("@YuriAlessandro", "988893945");
         Tweet newTweet = new Tweet(new Date(), author, textNewTweet);
 
-        allTweets.add(newTweet);
-        adapter.notifyDataSetChanged();
+        this.allTweets.add(newTweet);
+        this.adapter.notifyDataSetChanged();
 
-        tweet.setText("");
+        this.tweet.setText("");
+    }
+
+    public void sendDirect(View view){
+        String textNewDirect = this.tweet.getText().toString();
+
+        Author author = new Author("@YuriAlessandro", "988893945");
+        Tweet newTweet = new Tweet(new Date(), author, textNewDirect);
+
+        Context c = getApplicationContext();
+        Intent i = new Intent(c, ChatActivity.class);
+        i.putExtra(Tweet.TWEET_EXTRA, newTweet);
+
+        startActivityForResult(i, DIRECT);
     }
 
     public void setProfilePicture(View v){

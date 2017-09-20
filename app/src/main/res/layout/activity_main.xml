@@ -49,4 +49,14 @@ tools:context="com.example.tweeter.MainActivity">
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/sendTweet"/>
+
+    <Button
+        android:id="@+id/sendDirect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newTweet"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@+id/sendTweet"
+        android:text="Direct"
+        android:onClick="sendDirect"/>
 </android.widget.RelativeLayout>
