@@ -54,7 +54,7 @@
         android:layout_alignStart="@+id/serverIp" />
 
     <EditText
-        android:id="@+id/chatSocket"
+        android:id="@+id/chatMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -69,8 +69,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enviar"
-        android:layout_below="@id/chatSocket"
-        android:layout_marginLeft="20dp"/>
+        android:layout_below="@id/chatMessage"
+        android:layout_marginLeft="20dp"
+        android:onClick="sendDirect"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messages"

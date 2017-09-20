@@ -5,11 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -21,8 +23,9 @@ public class ChatActivity extends AppCompatActivity {
     // UI Components
     private TextView textIp;
     private Button btnSend;
+    private EditText chatMessage;
 
-    private List<String> allMessages;
+    private List<String> allMessages = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class ChatActivity extends AppCompatActivity {
         messagesRV.setAdapter(msgAdapter);
 
         textIp = (TextView) findViewById(R.id.deviceIp);
+        chatMessage = (EditText) findViewById(R.id.chatMessage);
 
         WifiManager wifiManager = (WifiManager) getApplicationContext()
                 .getSystemService(WIFI_SERVICE);
@@ -49,5 +53,13 @@ public class ChatActivity extends AppCompatActivity {
         textIp.setText(ipAddress);
 
         btnSend = (Button) findViewById(R.id.sendDirect);
+    }
+
+    public void sendDirect(View v){
+        String msg = chatMessage.getText().toString();
+        allMessages.add(msg);
+        msgAdapter.notifyDataSetChanged();
+
+        chatMessage.setText("");
     }
 }
