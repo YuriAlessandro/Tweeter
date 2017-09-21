@@ -6,10 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -57,13 +57,18 @@ public class ChatActivity extends AppCompatActivity {
         chatMessage = (EditText) findViewById(R.id.chatMessage);
 
         // Show device IP
-        WifiManager wifiManager = (WifiManager) getApplicationContext()
-                .getSystemService(WIFI_SERVICE);
-        String ipAddress = String.valueOf(wifiManager.getConnectionInfo().getIpAddress());
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
+
         textIp.setText(ipAddress);
 
         btnSend = (Button) findViewById(R.id.sendDirect);
         serverIp = (EditText) findViewById(R.id.serverIp);
+    }
+
+    private void onFinishGetRequest(String result){
+        allMessages.add(result);
+        msgAdapter.notifyDataSetChanged();
     }
 
     class SocketClient extends AsyncTask<String, Void, String> {
