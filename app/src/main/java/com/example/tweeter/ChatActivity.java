@@ -13,10 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -59,52 +61,73 @@ public class ChatActivity extends AppCompatActivity {
         // Show device IP
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
-
         textIp.setText(ipAddress);
 
         btnSend = (Button) findViewById(R.id.sendDirect);
         serverIp = (EditText) findViewById(R.id.serverIp);
     }
 
-    private void onFinishGetRequest(String result){
-        allMessages.add(result);
+    public void sendDirect(View v){
+        SocketClient client = new SocketClient();
+        client.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, serverIp.getText().toString(), "4444", chatMessage.getText().toString());
+    }
+
+    private void onFinishGetRequest(String result, int type){
+        String message;
+        if(type == 0){
+            message = "ME: " + result;
+        }else{
+            message = "STRANGER: " + result;
+        }
+        allMessages.add(message);
         msgAdapter.notifyDataSetChanged();
     }
 
-    class SocketClient extends AsyncTask<String, Void, String> {
+    private class SocketClient extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             Socket socket = null;
-            StringBuffer data = new StringBuffer();
-            try{
+            String message = params[2];
+
+            try {
                 socket = new Socket(params[0], Integer.parseInt(params[1]));
-                PrintWriter pw = new PrintWriter(
-                        new OutputStreamWriter(socket.getOutputStream()),
-                        true);
+                PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
                 pw.println(params[2]);
-                BufferedReader br = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream()));
-                String rawData;
-                while ((rawData = br.readLine()) != null){
-                    data.append(rawData);
-                }
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            }catch(Exception e) {
                 e.printStackTrace();
             }
-            return data.toString();
+
+            return message;
         }
 
         protected void onPostExecute(String result){
-            allMessages.add(result);
-            msgAdapter.notifyDataSetChanged();
+            onFinishGetRequest(result, 0);
+            chatMessage.setText("");
         }
     }
 
-    public void sendDirect(View v){
-        SocketClient client = new SocketClient();
-        client.execute(serverIp.getText().toString(), "4444", chatMessage.getText() + "");
-        chatMessage.setText("");
+    private class SocketServer extends AsyncTask<Object, Object, Void> {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            ServerSocket serverSocket = null;
+            boolean listening = true;
+            try{
+                serverSocket = new ServerSocket(4444);
+                while (listening){
+                    Socket socket = serverSocket.accept();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    String reader = in.readLine();
+
+                    onFinishGetRequest(reader, 1);
+
+                    socket.close();
+                }
+            } catch (IOException e){
+                e.printStackTrace();
+                System.exit(-1);
+            }
+            return null;
+        }
     }
 }
